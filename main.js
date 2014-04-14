@@ -37,7 +37,6 @@ require(["lib/jquery", "lib/keel", "lib/syntaxTree"], function(jquery, State, Sy
         S.on("input", validateLogin, ["email_input", "password_input"]);
         S.on("alert", showAlert);
         S.on("clear_session", clearInputFields);
-
         //listen to view
         $("input").keyup(captureInputs);
         $("#good_login").click(goodLogin);
@@ -45,7 +44,6 @@ require(["lib/jquery", "lib/keel", "lib/syntaxTree"], function(jquery, State, Sy
         $("#logout").click(logout);
         //entry point
         S.update({page:"login"});
-
         //listeners
         function showPage(page){
             var pages = ["login", "loading", "home"];
