@@ -1,5 +1,7 @@
 Keel is a declarative state-management tool for functional-style apps.
 
+*Basics*
+
 First create a state: 
 
     //default syntax tree is included
@@ -14,22 +16,22 @@ Add listeners to state changes:
 
     S.on("page", showPage);
     function showPage(page){
-        //show page
+        //implementation
     }
 
 Update your state to trigger listeners: 
 
-    //showPage will be called
     S.update({page: 'login'})
+    //showPage will be called
     //this could be the entry point for you app!
 
-At this early point, you might think that S is like the M in MVC and Keel facilitates this familiar control flow:
+At this early point, you might think that S is like the M in MVC and that Keel facilitates this familiar control flow:
 
 1. View triggers logic that updates model, then...
 2. Model triggers logic that...
 3. Updates view. 
 
-And you would be right! But there is more to it. Keel uses a flexible declarative syntax--"booleanese sugar"--to specify trigger conditions. This:
+And you would be right! But there's more to it. Keel uses a flexible declarative syntax ("booleanese sugar") to specify trigger conditions. This:
 
     S.on("authenticated", handleLogin);
 
@@ -43,7 +45,7 @@ Which is really this:
     S.on("authenticated was true and authenticated is false", handleLogin, ["authenticated']);
     S.on("authenticated was false and authenticated is true", handleLogin, ["authenticated']);
 
-Does handleLogin need to know where authentication was done?
+Does _handleLogin_ need to know where authentication was done?
 
     S.on("authenticated", handleLogin, ["authenticated", "page"]);
     //now handleLogin will get an object with authenticated and page properties
@@ -64,26 +66,26 @@ You can compound your expressions, too:
 
 And mix them with regular state expressions:
 
-    S.on("clear and page is editor", saveNag);
+    S.on("logout and page is editor", saveNag);
 
 With Keel's declarative syntax you can clearly express what your state is and when it should trigger logic. 
 
-You can also use rules to make sure your state stays coherent:
+You can also use rules to ensure your state remains coherent:
 
     S.rule("if logout then page equals login");
     S.rule("if authenticated is now true then page equals home");
     S.rule("if page is loading then instruction_key equals wait");
     //control logic can go inside state!
-    //your state is always valid and upright
+    //your state is always valid and upright...
     //like a KEEL in a boat
 
-First I'll tackle HOW this is done, then WHY.
+First HOW is this done, then why.
 
 HOW: Any time any property is updated, every single rule of state is applied. The process starts with an update like this: 
 
     S.update("authenticated", false);
 
-After the property is updated, state applies this rule to itself:
+After the property is updated, state applies this rule:
 
     S.rule("if authenticated is now false then page equals login");
 
@@ -91,24 +93,96 @@ And because it has this listener...
 
     S.on("page", showPage);
 
-...state invokes showPage and the user goes to the login page. 
+...state invokes showPage. 
 
 This process is at the heart of Keel:
 
 1. Update state.
 2. Run update rules to make sure state is coherent.
-3. Invoke listeners for particular states. 
+3. Invoke listeners for particular state permutations. 
 
-WHY? Why formalize state like this--pulling all your state properties into one place, updating all of them every time one is updated, doing declarative control flow within state and subscribing to different state permutations?
+WHY? Why formalize state like this--pulling all your state into one place, updating all your properties every time one is updated, doing declarative control flow within state and subscribing to various states?
 
-Because state can be slippery as hell and time-consuming to debug, and Keel makes state easier to see and manipulate. 
+Because state can be slippery as hell and time-consuming to debug, and Keel makes state easier to understand and manipulate. 
 
-Also, because formalized state is aces for functional programming. Keel is not written in a functional way, but it facilitates functional flow. Once you encapsulate state, you can pipe from View to the Model, and back again, without getting hung up on state conditionals or weirded out by incoherent state.
+More, because formalized state is aces for functional programming. Keel facilitates functional flow. Once you encapsulate state, you can pipe from View to the Model, and back again, without getting hung up on state conditionals or weirded out by incoherent state.
+
+*EXAMPLE App*
+
+There is demo app in the repo (example.html/main.js): 
+
+    var S = new State(SyntaxTree);
+    //create and init state properties
+    S.set("page", null);
+    S.set("authenticated", false);
+    S.set("instruction_key", null);
+    S.set("email_input", null);
+    S.set("email_valid", false);
+    S.set("password_input", null);
+    S.set("password_valid", false);
+    S.set("submit_enabled", null);
+    S.set("alert", null);
+    //state transform rules
+    S.rule("if page was null and page is login then instruction_key equals sign_in");
+    S.rule("if email_valid is true and password_valid is true then submit_enabled equals true");
+    S.rule("if email_valid is false or password_valid is false then submit_enabled equals false");
+    S.rule("if page is loading then instruction_key equals wait");
+    S.rule("if authenticated is now true then page equals home");
+    S.rule("if page is now home then instruction_key equals enjoy");
+    //create expressions for repeated use in rules or state listeners
+    S.exp("rejected", "page was loading and page is login");
+    S.exp("logout", "authenticated is now false");
+    S.exp("clear_session", "logout or rejected");
+    S.exp("input", "email_input has changed or password_input has changed")
+    //rules using created expressions
+    S.rule("if rejected then alert equals try_again");
+    S.rule("if clear_session then page equals login");
+    S.rule("if clear_session then password_input equals null");
+    S.rule("if clear_session then email_input equals null");
+    //listen to state
+    S.on("page", showPage);
+    S.on("instruction_key", showInstruction);
+    S.on("submit_enabled", showSubmit);
+    S.on("input", validateLogin, ["email_input", "password_input"]);
+    S.on("alert", showAlert);
+    S.on("clear_session", clearInputFields);
+    //listen to view
+    $("input").keyup(captureInputs);
+    $("#good_login").click(goodLogin);
+    $("#bad_login").click(badLogin);
+    $("#logout").click(logout);
+    //entry point
+    S.update({page:"login"});
+
+    //ALL THE HANDLER CODE IS IN main.js
+
+*Syntax*
+
+    var operands = ["then", "equals", "or", "and", "was", "was not", "is", "is not", "is now", "has changed", "greater than", "less than"];
+
+These are self-explanatory except for:
+
+"equals" sets a property to value while "is" checks for equality.
+"is now" checks for a value change in addition to equality
+"then" creates an if-then expression, so the "if" is actually optional
+
+The terminal nodes are always triplets:
+
+   x is y 
+   x and y
+   x equals y
+
+Triplets can be formed of other triplets:
+
+   x is y then x equals z
+
+There is no end of recursion:
+
+   x is y then x equals a greater than b
+
+As long as you can draw a binary tree of your statement, it should work. 
 
 
-TODO Syntax
-
-TODO Example app with explanations.
 
 
 
@@ -137,57 +211,5 @@ TODO Example app with explanations.
 
 
 
-
-
-
-
-
-
-
-
-
-Keel allows you to declaratively subscribe to state. "has changed" is declarative sugar. You could also subscribe using this more typical 'boolean-ese' syntax:
-
-S.on("authenticated is true", showAccountButton);
-
-When you update one property of state, you can can ensure that other properties of state are updated accordingly, with rules like this:
-
-S.rule("if authenticated has changed and authenticated is true then page is home");
-
-When authentication is updated like this:
-
-S.update({authentication: true});
-
-The rule makes sure the page property is updated, too:
-
-S.rule("if authenticated has changed and authenticated is true then page is home");
-
-So since you have subscribed to home:
-
-S.on("page has changed", showPage, ["page']);
-
-The home page will now show. 
-
-Another rule might be: 
-
-S.rule("if authenticated is false then page is login");
-
-So all you need to do to kick the user back to the login page is:
-
-S.update({authentication: false});
-
-What are we doing here? We are treating state like a coherent whole with its own logic. For every update, Keel goes through this process:
-
-1. Update state.
-2. Run update rules to make sure state is coherent.
-2. Invoke listeners for particular states. 
-
-The same declarative syntax can be used for rules:
-
-S.rule("if email valid and pwd valid");
-
-And for listener conditions:
-
-S.on("credentials not null and authentication is false", getUser)
 
 
