@@ -42,8 +42,8 @@ S.on("authenticated has changed", handleLogin, ["authenticated']);
 ```
 Which is really this:
 ```javascript
-S.on("authenticated was true and authenticated is false", handleLogin, ["authenticated']);
-S.on("authenticated was false and authenticated is true", handleLogin, ["authenticated']);
+S.on("authenticated was true and authenticated is false", handleLogin, ["authenticated"]);
+S.on("authenticated was false and authenticated is true", handleLogin, ["authenticated"]);
 ```
 Does _handleLogin_ need to know where authentication was done?
 ```javascript
