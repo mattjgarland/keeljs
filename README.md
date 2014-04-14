@@ -37,7 +37,7 @@ S.on("authenticated", handleLogin);
 ```
 Is really this:
 ```javascript
-S.on("authenticated has changed", handleLogin, ["authenticated']);
+S.on("authenticated has changed", handleLogin, ["authenticated"]);
 //the third parameter will pass the specified state properties into the handleLogin
 ```
 Which is really this:
