@@ -1,6 +1,6 @@
 Keel is a declarative state-management tool for functional-style apps.
 
-*Basics*
+__Basics__
 
 First create a state: 
 
@@ -107,9 +107,9 @@ Because state can be slippery as hell and time-consuming to debug, and Keel make
 
 More, because formalized state is aces for functional programming. Keel facilitates functional flow. Once you encapsulate state, you can pipe from View to the Model, and back again, without getting hung up on state conditionals or weirded out by incoherent state.
 
-*EXAMPLE App*
+__EXAMPLE App__
 
-There is demo app in the repo (example.html/main.js): 
+There is an example app in the repo (example.html/main.js): 
 
     var S = new State(SyntaxTree);
     //create and init state properties
@@ -156,29 +156,42 @@ There is demo app in the repo (example.html/main.js):
 
     //ALL THE HANDLER CODE IS IN main.js
 
-*Syntax*
+__Syntax__
 
-    var operands = ["then", "equals", "or", "and", "was", "was not", "is", "is not", "is now", "has changed", "greater than", "less than"];
+The operands:
+
+then
+equals
+or 
+and
+was
+was not
+is
+is not
+is now
+has changed
+greater than
+less than
 
 These are self-explanatory except for:
 
-"equals" sets a property to value while "is" checks for equality.
-"is now" checks for a value change in addition to equality
-"then" creates an if-then expression, so the "if" is actually optional
+_equals_ sets a property to value while _is_ checks for equality.
+_is now_ checks for a value change in addition to equality
+_then_ creates an if-then expression, so the _if_ is actually optional
 
 The terminal nodes are always triplets:
 
-   x is y 
-   x and y
-   x equals y
+    x is y 
+    x and y
+    x equals y
 
 Triplets can be formed of other triplets:
 
-   x is y then x equals z
+    x is y then x equals z
 
 There is no end of recursion:
 
-   x is y then x equals a greater than b
+    x is y then x equals a greater than b
 
 As long as you can draw a binary tree of your statement, it should work. 
 
