@@ -3,28 +3,28 @@ Keel is a declarative state-management tool for javascript apps.
 __Basics__
 
 First create a state: 
-
-    //default syntax tree is included
-    var S = new State(SyntaxTree);
-
+```javascript
+//default syntax tree is included
+var S = new State(SyntaxTree);
+```
 Add properties to a state:
-
-    S.set("authenticated", false);
-    S.set("page", null);
-
+```javascript
+S.set("authenticated", false);
+S.set("page", null);
+```
 Add listeners to state changes:
-
-    S.on("page", showPage);
-    function showPage(page){
-        //implementation
-    }
-
+```javascript
+S.on("page", showPage);
+function showPage(page){
+    //implementation
+}
+```
 Update your state to trigger listeners: 
-
-    S.update({page: 'login'})
-    //showPage will be called
-    //this could be the entry point for you app!
-
+```javascript
+S.update({page: 'login'})
+//showPage will be called
+//this could be the entry point for you app!
+```
 At this early point, you might think that S is like the M in MVC and that Keel facilitates this familiar control flow:
 
 1. View triggers logic that updates model, then...
@@ -32,67 +32,67 @@ At this early point, you might think that S is like the M in MVC and that Keel f
 3. Updates view. 
 
 And you would be right! But there's more to it. Keel uses a flexible declarative syntax ("booleanese sugar") to specify trigger conditions. This:
-
-    S.on("authenticated", handleLogin);
-
+```javascript
+S.on("authenticated", handleLogin);
+```
 Is really this:
-
-    S.on("authenticated has changed", handleLogin, ["authenticated']);
-    //the third parameter will pass the specified state properties into the handleLogin
-
+```javascript
+S.on("authenticated has changed", handleLogin, ["authenticated']);
+//the third parameter will pass the specified state properties into the handleLogin
+```
 Which is really this:
-
-    S.on("authenticated was true and authenticated is false", handleLogin, ["authenticated']);
-    S.on("authenticated was false and authenticated is true", handleLogin, ["authenticated']);
-
+```javascript
+S.on("authenticated was true and authenticated is false", handleLogin, ["authenticated']);
+S.on("authenticated was false and authenticated is true", handleLogin, ["authenticated']);
+```
 Does _handleLogin_ need to know where authentication was done?
-
-    S.on("authenticated", handleLogin, ["authenticated", "page"]);
-    //now handleLogin will get an object with authenticated and page properties
-
+```javascript
+S.on("authenticated", handleLogin, ["authenticated", "page"]);
+//now handleLogin will get an object with authenticated and page properties
+```
 You can create tokens for repeated expressions:
-
-    S.exp("rejected", "page was loading and page is login");
-    S.exp("logout", "authenticated is now false");
-
+```javascript
+S.exp("rejected", "page was loading and page is login");
+S.exp("logout", "authenticated is now false");
+```
 And use them like this:
-
-    S.on("logout", clearFields);
-
+```javascript
+S.on("logout", clearFields);
+```
 You can compound your expressions, too:
-
-    S.exp("clear", "rejected or logout");
-    S.on("clear", clearFields);
-
+```javascript
+S.exp("clear", "rejected or logout");
+S.on("clear", clearFields);
+```
 And mix them with regular state expressions:
-
-    S.on("logout and page is editor", saveNag);
-
+```javascript
+S.on("logout and page is editor", saveNag);
+```
 With Keel's declarative syntax you can clearly express what your state is and when it should trigger logic. 
 
 You can also use rules to ensure your state remains coherent:
-
-    S.rule("if logout then page equals login");
-    S.rule("if authenticated is now true then page equals home");
-    S.rule("if page is loading then instruction_key equals wait");
-    //control logic can go inside state!
-    //your state is always valid and upright...
-    //like a KEEL in a boat
-
+```javascript
+S.rule("if logout then page equals login");
+S.rule("if authenticated is now true then page equals home");
+S.rule("if page is loading then instruction_key equals wait");
+//control logic can go inside state!
+//your state is always valid and upright...
+//like a KEEL in a boat
+```
 First how is this done, then why.
 
 HOW. Any time any property is updated, every single rule of state is applied. The process starts with an update like this: 
-
-    S.update("authenticated", false);
-
+```javascript
+S.update("authenticated", false);
+```
 After the property is updated, state applies this rule:
-
-    S.rule("if authenticated is now false then page equals login");
-
+```javascript
+S.rule("if authenticated is now false then page equals login");
+```
 And because it has this listener...
-
-    S.on("page", showPage);
-
+```javascript
+S.on("page", showPage);
+```
 ...state invokes showPage. 
 
 This process is at the heart of Keel:
@@ -107,10 +107,10 @@ Because state can be slippery as hell and time-consuming to debug, and Keel make
 
 More, Keel facilitates functional flow. Once you encapsulate state, you can pipe from the view to the model and back again without getting hung up on state conditionals.
 
-__EXAMPLE App__
+__Example App__
 
 There is an example app in the repo (example.html/main.js): 
-
+```javascript
     var S = new State(SyntaxTree);
     //create and init state properties
     S.set("page", null);
@@ -155,7 +155,7 @@ There is an example app in the repo (example.html/main.js):
     S.update({page:"login"});
 
     //ALL THE HANDLER CODE IS IN main.js
-
+```
 __Syntax__
 
 The operands:
@@ -181,7 +181,7 @@ Triplets can be formed of other triplets:
 
 There is no end of recursion:
 
-    x is y then x equals a greater than b
+    x is y then x equals z greater than p
 
 As long as you can draw a binary tree of your statement, it should work. 
 
