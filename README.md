@@ -81,7 +81,7 @@ You can also use rules to ensure your state remains coherent:
 
 First how is this done, then why.
 
-HOW: Any time any property is updated, every single rule of state is applied. The process starts with an update like this: 
+HOW. Any time any property is updated, every single rule of state is applied. The process starts with an update like this: 
 
     S.update("authenticated", false);
 
@@ -101,7 +101,7 @@ This process is at the heart of Keel:
 2. Run update rules to make sure state is coherent.
 3. Invoke listeners for particular state permutations. 
 
-WHY? Why formalize state like this--pulling all your state into one place, updating all your properties every time one is updated, doing declarative control flow within state and subscribing to various states?
+WHY. Why formalize state like this--pulling all your state into one place, updating all your properties every time one is updated, doing declarative control flow within state and subscribing to various states?
 
 Because state can be slippery as hell and time-consuming to debug, and Keel makes state easier to understand and manipulate. 
 
@@ -164,9 +164,9 @@ then, equals, or, and, was, was not, is, is not, is now, has changed, greater th
 
 These are self-explanatory except for:
 
-*_equals_ sets a property to value while _is_ checks for equality.
-*_is now_ checks for a value change in addition to equality.
-*_then_ creates an if-then expression, so the _if_ is actually optional.
+   *_equals_ sets a property to value while _is_ checks for equality.
+   *_is now_ checks for a value change in addition to equality.
+   *_then_ creates an if-then expression, so the _if_ is actually optional.
 
 The terminal nodes are always triplets:
 
