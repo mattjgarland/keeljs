@@ -164,9 +164,9 @@ then, equals, or, and, was, was not, is, is not, is now, has changed, greater th
 
 These are self-explanatory except for:
 
-   *_equals_ sets a property to value while _is_ checks for equality.
-   *_is now_ checks for a value change in addition to equality.
-   *_then_ creates an if-then expression, so the _if_ is actually optional.
+   + _equals_ sets a property to value while _is_ checks for equality.
+   + _is now_ checks for a value change in addition to equality.
+   + _then_ creates an if-then expression, so the _if_ is actually optional.
 
 The terminal nodes are always triplets:
 
