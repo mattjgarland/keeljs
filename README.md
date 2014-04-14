@@ -167,7 +167,7 @@ These are self-explanatory except for:
    + _equals_ sets a property to value while _is_ checks for equality.
    + _is now_ checks for a value change in addition to equality.
    + _then_ creates an if-then expression, so the _if_ is actually optional.
-   + _and is the boolean _and_, while _plus_ means do this _plus_ this.
+   + _and_ is the boolean _and_, while _plus_ means do this _plus_ this.
 
 The terminal nodes are always triplets:
 
