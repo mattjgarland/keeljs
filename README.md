@@ -160,7 +160,7 @@ __Syntax__
 
 The operands:
 
-    then, plus, equals, or, and, was, was not, is, is not, is now, has changed, greater than, less than
+    then, plus, set, or, and, was, was not, is, is not, is now, has changed, greater than, less than
 
 These are self-explanatory except for:
 
