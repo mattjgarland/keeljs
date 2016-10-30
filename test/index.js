@@ -6,52 +6,149 @@ const printCleanConfig = Keel.printCleanConfig
 const assert = require("assert")
 
 describe ("State", () => {
-     printCleanConfig({
-         data: {
-            flag: false,
-            echo: false
-         },
-         expressions: {
-            flagAndEchoTrue: "flag is true and echo is true"
-         },
-         rules: [
-            "echo SET flag"
-         ]
-      })
-   it("works", (done) => {
-      const state  = makeState({
-         data: {
-            flag: false,
-            echo: false
-         },
-         expressions: {
-            flagAndEchoTrue: "flag is true and echo is true"
-         },
-         rules: [
-            "echo set flag"
-         ]
-      })
-     
-      state.on("flagAndEchoTrue", data => {
-         //assert(data.flag === true)
-         //assert(data.echo === true)
-         //data.flag = false
-         console.log("FLAG", data.flag)
-         //assert(data.flag === true)
-         //data.echo = false
-         assert(data.echo === true)
-         done()
-      })
-      state.update({flag: true})
-      assert(false)
-   })
+    let config
+    let state
+
+    it("a field update can trigger a listener", (done) => {
+        state = makeState({
+            data: {
+                foo: true
+            }
+        })
+        state.on("foo", data => {
+            assert(data.foo === false)
+            done()
+        })
+        state.update({foo: false})
+    })
+
+    it("a field update with the same value do not trigger a listener", (done) => {
+        state = makeState({
+            data: {
+                foo: true
+            }
+        })
+        state.on("foo", data => {
+            assert(false)
+            done()
+        })
+        state.update({foo: true})
+        assert(true)
+        done()
+    })
+
+    it("a boolean expression can act as a trigger", (done) => {
+        state = makeState({
+            data: {
+                foo: true,
+                bar: false
+            },
+            expressions: {
+                fooAndBar: "foo is true and bar is true"
+            }
+        })
+        state.on("fooAndBar", data => {
+            assert(data.bar === true)
+            done()
+        })
+        state.update({bar: true})
+        assert(false)
+        done()
+    })
+
+    it("a boolean expression passed into 'on' can act as a trigger", (done) => {
+        state = makeState({
+            data: {
+                foo: true,
+                bar: false
+            }
+        })
+        state.on("foo is true and bar is true", data => {
+            assert(data.bar === true)
+            done()
+        })
+        state.update({bar: true})
+        assert(false)
+        done()
+    })
+
+    it("the application of a rule can invoke a listener", (done) => {
+        state = makeState({
+            data: {
+                foo: false,
+                bar: false
+            },
+            rules: [
+                "bar set foo"
+            ]
+        })
+        state.on("bar is true", data => {
+            assert(data.bar === true)
+            done()
+        })
+        state.update({foo: true})
+        assert(false)
+        done()
+    })
+
+    it("an expression can be used in an expression", (done) => {
+        state = makeState({
+            data: {
+                foo: false,
+                bar: false
+            },
+            expressions:{
+                fooIsTrue: "foo is true",
+                fooAndBar: "fooIsTrue and bar is true"
+            },
+        })
+        state.on("fooAndBar", data => {
+            assert(data.bar === true)
+            done()
+        })
+        state.update({foo: true, bar: true})
+        assert(false)
+        done()
+    })
+
+    it("an expression can be used in a rule", (done) => {
+        state = makeState({
+            data: {
+                foo: false,
+                bar: false
+            },
+            expressions:{
+                fooIsTrue: "foo is true"
+            },
+            rules: [
+                "if fooIsTrue then bar set true"
+            ]
+        })
+        state.on("bar", data => {
+            assert(data.bar === true)
+            done()
+        })
+        state.update({foo: true})
+        assert(false)
+        done()
+    })
+
+    it("data passed into a listener cannot be changed", () => {
+        function badSet(){
+             state = makeState({
+                data: {
+                    foo: true
+                }
+            })
+            state.on("foo", data => {
+                data.foo = "barf"
+            })
+            state.update({foo: false})
+        }
+        assert.throws(badSet, Error)
+    })
+
 })
 
-// const state = new State()
-// state.set("falseFlag", false)
-// state.set("trueFlag", true)
-// state.set("reset", false)
-// state.exp("bothTrue", "falseFlag is true and trueFlag is true")
-// state.exp("bothFalse", "falseFlag is false and trueFlag is false")
-// state.rule("if reset is now true then falseFlag equals false and trueFlag is true")
-// state.on("falseFlag", state => assert(false))
+//history revert
+//history dumpHistory()
