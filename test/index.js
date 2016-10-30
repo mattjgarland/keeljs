@@ -2,23 +2,36 @@
 
 const Keel = require("../index.js")
 const makeState = Keel.makeState
+const printCleanConfig = Keel.printCleanConfig
 const assert = require("assert")
 
 describe ("State", () => {
-
-   it("works", (done) => {
-      const state  = makeState({
-         fields: {
+     printCleanConfig({
+         data: {
             flag: false,
             echo: false
          },
-         exps: {
+         expressions: {
             flagAndEchoTrue: "flag is true and echo is true"
          },
          rules: [
-            "echo equals flag"
+            "echo SET flag"
          ]
       })
+   it("works", (done) => {
+      const state  = makeState({
+         data: {
+            flag: false,
+            echo: false
+         },
+         expressions: {
+            flagAndEchoTrue: "flag is true and echo is true"
+         },
+         rules: [
+            "echo set flag"
+         ]
+      })
+     
       state.on("flagAndEchoTrue", data => {
          //assert(data.flag === true)
          //assert(data.echo === true)

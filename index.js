@@ -1,4 +1,5 @@
 const State = require("./lib/state.js")
+const printCleanConfig = require("./lib/syntax-tree.js").printCleanConfig
 
 module.exports.State = State
 module.exports.makeState = config => {
@@ -6,5 +7,4 @@ module.exports.makeState = config => {
    state.init(config)
    return state
 }
-
-//get config by requiring it and parsing yaml
+module.exports.printCleanConfig = printCleanConfig
