@@ -468,6 +468,16 @@ describe("Data", () => {
         }
         assert.throws(badSet, Error)
     })
+
+    it("data can be changed/accessed directly with set/get", () => {
+        state = makeState({
+            data: {
+                foo: true
+            }
+        })
+        state.set("foo", false)
+        assert(state.get("foo") === false)
+    })
 })
 
 describe("Grammar", () => {
@@ -531,6 +541,34 @@ describe("Grammar", () => {
 })
 
 describe("History", () => {
-    //state can be dumped
-    //history can be set to make state a flyweight
+    it("history can be dumped", () => {
+        state = makeState({
+            data: {
+                foo: false,
+            }
+        })
+        state.update({foo: true})
+        let history = state.getHistory()
+        assert(history.length === 2)
+        assert(history.pop().foo === true)
+        assert(history.pop().foo === false)
+    })
+
+    it("state can be a flyweight (no own data) when history is set", (done) => {
+        state = makeState({
+            data: {
+                foo: false,
+            }
+        })
+        state.update({foo: true})
+        let newHistory = [ { foo: true }, { foo: false } ]  
+        state.setHistory(newHistory)
+        state.on("foo", (data) => {
+            assert(data.foo === true)
+            done()
+        })
+        state.update({foo: true})
+        assert(false)
+        done()
+    })
 })
