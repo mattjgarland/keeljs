@@ -2,7 +2,6 @@
 
 const Keel = require("../index.js")
 const makeState = Keel.makeState
-const printCleanConfig = Keel.printCleanConfig
 const assert = require("assert")
 let config
 let state

@@ -1,5 +1,82 @@
 Keel is a declarative state-management tool for javascript apps.
 
+Where do you keep your state? Typically state does not get as much love as models. Often it is scattered in closures, variables and objects, and is updated higgedly piggedly. And that's a shame, because state can be slippery as hell, and you can end up polluting essential application logic with ugly code for getting and setting state.
+
+Keel gathers all your state into one, encapsulated State object that takes responsibility for updating itself with clear, natural-language rules.
+
+```js
+keel = require("keel")
+makeState = keel.makeState
+
+let s = makeState({
+    data: {
+        foo: false,
+        bar: false
+    },
+    rules: [
+        "if foo is true then bar is true"
+    ]
+})
+
+s.on("bar", (data) => {
+    console.log("New bar is", data.bar)
+})
+
+s.update({foo: true})
+```
+
+In this short example:
+
+- State fields are defined and inited with configuration `{foo: false, bar: false}`.
+- State is updated with new values `{foo: true}`.
+- The rule `if foo is true then bar is true` is applied and `bar` is updated to `true`.
+- Because a listener has been added for `bar` changes, it is invoked and passed state `data`.
+
+That's the entirely of the Keel process. It's simple and clear...and it remains so as complexity scales up. 
+
+Here is a single-page application state:
+
+```js
+const s = makeState({
+    data: {
+        page: null,
+        authenticated: false,
+        instruction: null,
+        emailInput: null,
+        emailValid: false,
+        passwordInput: null,
+        passwordValid: false,
+        submitEnabled:false,
+        alert: null
+    },
+    rules: [
+        "if page was null and page is login then set instruction signIn",
+        "if emailValid is true and passwordValid is true then set submitEnabled true",
+        "if emailValid is false or passwordValid is false then set submitEnabled false and set alert mistake",
+        "if page is loading then set instruction wait",
+        "if authenticated is now true then set page home",
+        "if page is now home then set instruction enjoy"
+    ]
+})
+
+s.on("page", showPage)
+s.on("instruction", showInstruction)
+s.on("submitEnabled", showSubmit)
+s.on("input", validateLogin);
+s.on("alert", showAlert);
+
+s.update({page: "login"})
+```
+    S.rule("if page was null and page is login then instruction_key equals sign_in");
+    S.rule("if email_valid is true and password_valid is true then submit_enabled equals true");
+    S.rule("if email_valid is false or password_valid is false then submit_enabled equals false");
+    S.rule("if page is loading then instruction_key equals wait");
+    S.rule("if authenticated is now true then page equals home");
+    S.rule("if page is now home then instruction_key equals enjoy");
+
+
+
+
 __Basics__
 
 First create a state: 
