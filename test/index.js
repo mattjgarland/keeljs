@@ -19,6 +19,8 @@ describe ("Triggering Handlers", () => {
             done()
         })
         state.update({foo: false})
+        assert(false)
+        done()
     })
 
     it("a field update with the same value does not trigger a listener", (done) => {
@@ -52,6 +54,25 @@ describe ("Triggering Handlers", () => {
         })
         state.update({bar: true})
         assert(false)
+        done()
+    })
+
+    it("a boolean expression can act as a trigger only if it has changed", (done) => {
+        state = makeState({
+            data: {
+                foo: true,
+                bar: true
+            },
+            expressions: {
+                fooAndBar: "foo is true and bar is true"
+            }
+        })
+        state.on("fooAndBar", data => {
+           assert(false)
+           done()
+        })
+        state.update({bar: true})
+        assert(true)
         done()
     })
 
@@ -293,6 +314,28 @@ describe("Operands", () => {
         done()
     })
 
+    it("'has changed' expression + positive case", (done) => {
+        state = makeState({
+            data: {
+                foo: true,
+                bar: false,
+            },
+            expressions: {
+                fooHasChanged: "foo has changed"
+            },
+            rules: [
+                "if fooHasChanged then set bar true"
+            ]
+         })
+        state.on("bar", (data) => {
+            assert(data.bar === true)
+            done()
+        })
+        state.update({foo: false})
+        assert(false)
+        done()
+    })
+
     it ("'has changed' negative case", (done) => {
         state = makeState({
             data: {
@@ -504,38 +547,26 @@ describe("Grammar", () => {
         state = makeState({
             data: {
                 foo: false,
-                bar: false
+                bar: false,
+                counter: 0
             },
             expressions:{
-                fooIsTrue: "foo is true"
+                fooHasChanged: "foo has changed",
+                setBarTrue: "set bar true",
+                bumpCounter: "inc counter"
             },
             rules: [
-                "if fooIsTrue then set bar true"
+                "if fooHasChanged then setBarTrue and bumpCounter"
             ]
         })
         state.on("bar", data => {
             assert(data.bar === true)
+            assert(data.counter === 1)
             done()
         })
         state.update({foo: true})
         assert(false)
         done()
-    })
-
-     it("top operand types (then) must be on the same level", () => {
-        function complicatedTree(){
-            state = makeState({
-                data: {
-                    x: 0,
-                    y: 1,
-                    z: 0
-                },
-                rules: [
-                    "if x is 1 then set x 2 and if z is 1 then set y 2"
-                ]
-            })
-        }
-        assert.throws(complicatedTree, Error)
     })
 })
 
