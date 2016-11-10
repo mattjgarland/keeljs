@@ -1,6 +1,6 @@
 Keel is a declarative state-management tool for javascript apps.
 
-Where do you keep your state? Typically state does not get as much love as models. Often it is scattered in closures, variables and objects, and is updated randomly. And that's a shame, because state can be slippery, and ugly code for getting and setting state can end up polluting essential application logic.
+Where do you keep your state? Typically state does not get as much love as models. Often scattered in closures, variables and objects, state logic is pretty random. And that's a shame, because state can be slippery, and ugly code for getting and setting state can end up polluting essential application logic.
 
 Keel gathers application state into one, encapsulated object that takes responsibility for updating itself with clear, natural-language rules.
 
@@ -33,8 +33,6 @@ In this short example:
 - Because a listener has been added for `bar` changes, it is invoked and passed state `data`.
 
 That's the entirety of the Keel process. It's simple and clear--and it remains so, even as your app scales in complexity. 
-
-Here is a single-page application state:
 
 ```js
 const s = makeState({
