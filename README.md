@@ -1,8 +1,7 @@
-Keel is a declarative state-management tool for javascript apps.
 
-Where do you keep your state? Typically state does not get as much love as models. Often scattered in closures, variables and objects, state logic is pretty random. And that's a shame, because state can be slippery, and ugly code for getting and setting state can end up polluting essential application logic.
+Where do you keep your state? Typically state does not get as much love as models. It's kept in closures, variables and objects, and updated willy nilly. And that's a shame, because state is slippery, and ugly state-specific code can end up polluting essential application logic.
 
-Keel gathers application state into one, encapsulated object that takes responsibility for updating itself with clear, natural-language rules.
+Keel is declarative state management tool for javascript apps. Keel gathers application state into one, encapsulated object that takes responsibility for updating itself with clear, natural-language rules.
 
 ```js
 keel = require("keel")
@@ -64,13 +63,10 @@ s.on("input", validateLogin);
 s.on("alert", showAlert);
 
 s.update({page: "login"})
+
+//
 ```
-    S.rule("if page was null and page is login then instruction_key equals sign_in");
-    S.rule("if email_valid is true and password_valid is true then submit_enabled equals true");
-    S.rule("if email_valid is false or password_valid is false then submit_enabled equals false");
-    S.rule("if page is loading then instruction_key equals wait");
-    S.rule("if authenticated is now true then page equals home");
-    S.rule("if page is now home then instruction_key equals enjoy");
+
 
 
 
