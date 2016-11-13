@@ -568,6 +568,31 @@ describe("Grammar", () => {
         assert(false)
         done()
     })
+
+    it("expression nodes are subordinated to non-expression nodes of the same type", (done) => {
+        state = makeState({
+            data: {
+                foo: false,
+                bar: false,
+                baz: false,
+                bleck: false
+            },
+            expressions: {
+                fooAndBar: "if foo is true and bar is true",
+                ifBazIsTrueThenSetBleckTrue: "if baz is true then set bleck true"
+            },
+            rules: [
+                "if fooAndBar and baz then ifBazIsTrueThenSetBleckTrue"
+            ]
+        })
+        state.on("bleck", data => {
+            assert(data.bleck === true)
+            done()
+        })
+        state.update({foo: true, bar: true, baz: true})
+        assert(false)
+        done()
+    })
 })
 
 describe("History", () => {

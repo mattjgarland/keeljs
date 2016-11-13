@@ -1,7 +1,7 @@
 
-Where do you keep your state? Typically state does not get as much love as models. It's kept in closures, variables and objects, and updated willy nilly. And that's a shame, because state is slippery, and ugly state-specific code can end up polluting essential application logic.
+Where do you keep your state? Typically state does not get the love that models do. State and state logic are often scattered in closures, variables and objects. And that's a shame, both because state can be slippery, and ugly state-specific code can pollute application logic.
 
-Keel is declarative state management tool for javascript apps. Keel gathers application state into one, encapsulated object that takes responsibility for updating itself with clear, natural-language rules.
+Keel is declarative state management tool for javascript apps. It gathers application state into an encapsulated object that updates itself with clear, English-sounding rules.
 
 ```js
 keel = require("keel")
@@ -31,9 +31,10 @@ In this short example:
 - The rule `if foo is true then bar is true` is applied and `bar` is updated to `true`.
 - Because a listener has been added for `bar` changes, it is invoked and passed state `data`.
 
-That's the entirety of the Keel process. It's simple and clear--and it remains so, even as your app scales in complexity. 
+That's the entirety of the Keel process. It's simple--and remains so, even as your app grows more complex. 
 
 ```js
+
 const s = makeState({
     data: {
         page: null,
