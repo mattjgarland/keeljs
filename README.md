@@ -73,7 +73,7 @@ The benefits of Keel are twofold:
 
 ## Expressions 
 
-When you create a state, you can specify expressions as well as fieldfs and rules. Expressions make rules more expressive:
+When you create a state, you can specify expressions as well as fields and rules. Expressions make rules more expressive:
 
 ```js
 const s = makeState({
@@ -166,7 +166,9 @@ This is resolved into a syntax tree like this:
  {x -> is <- 0} -> then <- {y -> set <- 1}
  ```
 
-A sentence with two high-level _thens_ could not be resolved. If you need two _thens,_ make sure one exists in an expression, because verb expressions are weaker and resolved first. However, the point of Keel is to express your state logic in the simplest, clearest way possible. If your rules are bumping up against syntax, ask yourself if you need more fields or rules rather than more complex syntax.
+A sentence with two high-level _thens_ could not be resolved into a single tree. If you need two _thens,_ make sure one exists in an expression, because verb expressions are weaker and resolved first. 
+
+However, the point of Keel is to express your state logic in the simplest, clearest way possible. If your rules are bumping up against syntax, ask yourself if you need more rules rather than more complex syntax.
 
 
 
