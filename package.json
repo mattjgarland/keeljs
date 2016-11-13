@@ -1,0 +1,35 @@
+{
+  "name": "keel",
+  "version": "1.0.0",
+  "description": "State management for Javascript apps.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattjgarland/keel.git"
+  },
+  "keywords": [
+    "state",
+    "node",
+    "javascript",
+    "syntax",
+    "tree",
+    "interpretor"
+  ],
+  "author": "Matt Garland <mattjgarland@gmail.com> (https://www.linkedin.com/in/matt-garland-48174012)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattjgarland/keel/issues"
+  },
+  "homepage": "https://github.com/mattjgarland/keel#readme",
+  "devDependencies": {
+    "eslint": "^3.9.0",
+    "mocha": "^3.1.2",
+    "mocha-cli": "^1.0.1"
+  }
+}
